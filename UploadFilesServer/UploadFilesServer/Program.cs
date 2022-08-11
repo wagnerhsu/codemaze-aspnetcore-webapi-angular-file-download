@@ -1,11 +1,19 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Serilog;
+using Serilog.WxLibrary;
 using UploadFilesServer.Context;
 
+var serilogService = new SerilogService(SerilogService.DefaultOptions);
+serilogService.Initialize();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Trace);
+builder.Logging.AddSerilog();
 
 builder.Services.AddDbContext<UserContext>(opts =>
                opts.UseSqlServer(builder.Configuration["sqlconnection:connectionString"]));
